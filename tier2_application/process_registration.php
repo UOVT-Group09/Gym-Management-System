@@ -51,11 +51,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: ../tier1_presentation/index.php?status=success");
             exit();
         } else {
-            echo "Error: " . $stmt->error;
+            error_log("Registration failed: " . $stmt->error);
+            echo "Error: Unable to process registration at this time.";
         }
         $stmt->close();
     } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+        error_log("Registration exception: " . $e->getMessage());
+        echo "Error: Unable to process registration at this time.";
     }
 
     $conn->close();
