@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member Registration - Gym System</title>
-    <link rel="stylesheet" href="style.css"> <!-- Member 2 ගේ CSS එක මෙතනට සම්බන්ධ වේ -->
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
     <div class="container">
         <h2>Gym Member Registration</h2>
         <p>Please fill in the details to register a new member.</p>
         
-        <!-- දත්ත යොමු කරන්නේ Tier 2 එකටයි -->
-        <form action="../tier2_application/process_registration.php" method="POST">
+        
+<form action="../tier2_application/process_registration.php" method="POST">
             <div class="form-group">
                 <label>Full Name:</label>
                 <input type="text" name="full_name" required placeholder="Enter full name">
