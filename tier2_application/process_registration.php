@@ -3,12 +3,12 @@ require_once 'db_config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
-    $full_name = $_POST['full_name'];
-    $email     = $_POST['email'];
-    $phone     = $_POST['phone'];
-    $gender    = $_POST['gender'];
-    $type_id   = $_POST['type_id'];
-    $amount    = $_POST['amount'];
+    $full_name = trim($_POST['full_name'] ?? '');
+    $email     = trim($_POST['email'] ?? '');
+    $phone     = trim($_POST['phone'] ?? '');
+    $gender    = trim($_POST['gender'] ?? '');
+    $type_id   = trim($_POST['type_id'] ?? '');
+    $amount    = trim($_POST['amount'] ?? '');
 
     
     if (empty($full_name) || empty($email) || empty($type_id)) {
