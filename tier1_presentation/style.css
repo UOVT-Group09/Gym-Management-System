@@ -1,15 +1,15 @@
-/* මුළු පිටුවේම පොදු පෙනුම */
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
     /* Background Image */
-    background-image: url('images/1.jpg'); /* ඔබගේ image path එක මෙතන */
+    background-image: url('images/1.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
 
-    /* Dark overlay effect for readability */
+
     position: relative;
     margin: 0;
 
@@ -20,7 +20,7 @@ body {
     color: #ffffff;
 }
 
-/* Dark overlay layer */
+
 body::before {
     content: "";
     position: absolute;
@@ -28,14 +28,14 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.6); /* dark transparent layer */
+    background: rgba(0, 0, 0, 0.6);
     z-index: 0;
 }
 
 /* Form Container */
 .container {
     position: relative;
-    z-index: 1; /* overlay එකට උඩින් form එක පෙන්වන්න */
+    z-index: 1;
 
     background-color: rgba(45, 45, 45, 0.9);
     padding: 30px;
