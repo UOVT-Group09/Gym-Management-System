@@ -10,20 +10,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $type_id   = trim($_POST['type_id'] ?? '');
     $amount    = trim($_POST['amount'] ?? '');
 
-    
-    if (empty($full_name) || empty($email) || empty($type_id)) {
+    $allowed_genders = ['male', 'female', 'other'];
+
+    if (empty($full_name) || empty($email) || empty($gender) || empty($type_id) || $amount === '') {
         die("Error: Please fill all required fields.");
     }
 
-    
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         die("Error: Invalid email format.");
     }
 
-    
     if (!preg_match('/^[0-9]{10}$/', $phone)) {
         die("Error: Phone number must be 10 digits.");
     }
+
+    if (!in_array(strtolower(trim($gender)), $allowed_genders, true)) {
+        die("Error: Invalid gender value.");
+    }
+
+    $validated_type_id = filter_var($type_id, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]]);
+    if ($validated_type_id === false) {
+        die("Error: Invalid membership type.");
+    }
+
+    if (!is_numeric($amount) || (float)$amount <= 0) {
+        die("Error: Amount must be a numeric value greater than zero.");
+    }
+
+    $type_id = (int)$validated_type_id;
+    $amount = (float)$amount;
 
     try {
         
