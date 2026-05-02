@@ -10,16 +10,25 @@ CREATE PROCEDURE RegisterNewMember(
     IN p_amount DECIMAL(10, 2)
 )
 BEGIN
-    
+    DECLARE v_new_id INT;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    START TRANSACTION;
+
     INSERT INTO members (full_name, email, phone, gender, type_id) 
     VALUES (p_full_name, p_email, p_phone, p_gender, p_type_id);
-    
-    
-    SET @new_id = LAST_INSERT_ID();
-    
-    
+
+    SET v_new_id = LAST_INSERT_ID();
+
     INSERT INTO payments (member_id, amount) 
-    VALUES (@new_id, p_amount);
+    VALUES (v_new_id, p_amount);
+
+    COMMIT;
 END //
 
 DELIMITER ;
