@@ -98,7 +98,7 @@ END$$
 
 CREATE PROCEDURE GetTotalRevenue()
 BEGIN
-    SELECT SUM(amount) AS total_revenue FROM payments;
+    SELECT COALESCE(SUM(amount), 0) AS total_revenue FROM payments;
 END$$
 
 DELIMITER ;
