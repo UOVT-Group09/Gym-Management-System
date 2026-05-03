@@ -8,11 +8,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone     = trim($_POST['phone'] ?? '');
     $gender    = trim($_POST['gender'] ?? '');
     $type_id   = trim($_POST['type_id'] ?? '');
-    $amount    = trim($_POST['amount'] ?? '');
 
     $allowed_genders = ['male', 'female', 'other'];
 
-    if (empty($full_name) || empty($email) || empty($gender) || empty($type_id) || $amount === '') {
+    if (empty($full_name) || empty($email) || empty($gender) || empty($type_id)) {
         die("Error: Please fill all required fields.");
     }
 
@@ -33,18 +32,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Error: Invalid membership type.");
     }
 
-    if (!is_numeric($amount) || (float)$amount <= 0) {
-        die("Error: Amount must be a numeric value greater than zero.");
-    }
-
     $type_id = (int)$validated_type_id;
-    $amount = (float)$amount;
 
     try {
         
-        $sql = "CALL RegisterNewMember(?, ?, ?, ?, ?, ?)";
+        $sql = "CALL RegisterNewMember(?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssid", $full_name, $email, $phone, $gender, $type_id, $amount);
+        $stmt->bind_param("ssssi", $full_name, $email, $phone, $gender, $type_id);
 
         if ($stmt->execute()) {
             
