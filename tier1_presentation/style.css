@@ -21,14 +21,14 @@ body {
 }
 
 
-feature/member-registration-handle
-/* Overlay for registration page only */
 .overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
+    pointer-events: none;
+}
 
 body::before {
     content: "";
@@ -37,10 +37,12 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-main
+    pointer-events: none;
+}
+
+main {
     background: rgba(0, 0, 0, 0.6);
     z-index: 0;
-    pointer-events: none;
 }
 
 *, *::before, *::after {
