@@ -46,3 +46,21 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     role ENUM('Admin', 'User') DEFAULT 'User'
 );
+
+
+-- වාර්තා ලබා ගැනීමට අවශ්‍ය Stored Procedures
+DELIMITER $$
+
+CREATE PROCEDURE GetAllMembers()
+BEGIN
+    SELECT m.member_id, m.full_name, m.email, m.phone, m.gender, mt.type_name 
+    FROM members m
+    JOIN membership_types mt ON m.type_id = mt.type_id;
+END$$
+
+CREATE PROCEDURE GetTotalRevenue()
+BEGIN
+    SELECT SUM(amount) AS total_revenue FROM payments;
+END$$
+
+DELIMITER ;
