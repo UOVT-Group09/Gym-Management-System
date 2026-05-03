@@ -91,7 +91,7 @@ END$$
 
 CREATE PROCEDURE GetAllMembers()
 BEGIN
-    SELECT m.member_id, m.full_name, m.email, m.phone, m.gender, mt.type_name 
+    SELECT m.member_id, m.full_name, m.email, m.phone, m.gender, m.join_date, mt.type_name
     FROM members m
     LEFT JOIN membership_types mt ON m.type_id = mt.type_id;
 END$$
