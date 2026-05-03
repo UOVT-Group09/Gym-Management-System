@@ -1,58 +1,137 @@
-/* ── Center form vertically + horizontally ─────────────────── */
+/* ── Page layout ───────────────────────────────────────────── */
 .main-content {
     display: flex;
     flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.topbar {
+    flex-shrink: 0;
 }
 
 .form-center {
     flex: 1;
+    min-height: 0;
+    padding: 0 40px 40px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 0 40px;
 }
 
-/* ── Form Card ─────────────────────────────────────────────── */
+/* ── Split card ────────────────────────────────────────────── */
 .form-card {
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-    overflow: hidden;
+    display: flex;
     width: 100%;
-    max-width: 860px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
-.form-card-header {
+/* ── Left info panel ───────────────────────────────────────── */
+.form-panel-info {
+    width: 38%;
+    flex-shrink: 0;
+    background: #2c3e50;
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
+}
+
+.info-brand {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 22px 28px;
-    border-bottom: 1px solid #f0f2f5;
-    background: #fafbfc;
+    gap: 14px;
 }
 
-.form-card-icon {
-    width: 46px;
-    height: 46px;
-    background: #fff8e1;
-    border-radius: 10px;
+.info-brand-icon {
+    width: 52px;
+    height: 52px;
+    background: #ffcc00;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    border: 1px solid #ffe082;
 }
 
-.form-card-title {
-    font-size: 1rem;
-    font-weight: 700;
+.info-brand-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #ffcc00;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.info-heading {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.3;
+}
+
+.info-heading span {
+    color: #ffcc00;
+}
+
+.info-sub {
+    font-size: 0.88rem;
+    color: #7f8c9a;
+    line-height: 1.6;
+    margin-top: -20px;
+}
+
+.info-features {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.info-feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #bdc3c7;
+    font-size: 0.88rem;
+}
+
+.info-feature-icon {
+    width: 34px;
+    height: 34px;
+    background: rgba(255, 204, 0, 0.12);
+    border: 1px solid rgba(255, 204, 0, 0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #ffcc00;
+}
+
+/* ── Right form panel ──────────────────────────────────────── */
+.form-panel-form {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 48px;
+    overflow-y: auto;
+}
+
+.form-panel-title {
+    margin-bottom: 32px;
+}
+
+.form-panel-title h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
     color: #2c3e50;
+    margin: 0 0 6px;
 }
 
-.form-card-subtitle {
-    font-size: 0.78rem;
+.form-panel-title p {
+    font-size: 0.83rem;
     color: #95a5a6;
-    margin-top: 2px;
 }
 
 .required {
@@ -60,12 +139,12 @@
     font-weight: 700;
 }
 
-/* ── Form Layout ───────────────────────────────────────────── */
+/* ── Form layout ───────────────────────────────────────────── */
 .reg-form {
-    padding: 28px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    flex: 1;
 }
 
 .form-row {
@@ -77,13 +156,14 @@
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
 }
 
 .form-label {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
     color: #2c3e50;
+    letter-spacing: 0.2px;
 }
 
 /* ── Input with icon ───────────────────────────────────────── */
@@ -96,7 +176,7 @@
     left: 13px;
     top: 50%;
     transform: translateY(-50%);
-    color: #95a5a6;
+    color: #bdc3c7;
     display: flex;
     align-items: center;
     pointer-events: none;
@@ -105,23 +185,22 @@
 .form-input {
     width: 100%;
     padding: 11px 14px 11px 40px;
-    border: 1.5px solid #dde1e7;
+    border: 1.5px solid #e8ecf0;
     border-radius: 8px;
     font-size: 0.9rem;
     color: #2c3e50;
-    background: #fff;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #fafbfc;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
     box-sizing: border-box;
     font-family: inherit;
 }
 
-.form-input::placeholder {
-    color: #bdc3c7;
-}
+.form-input::placeholder { color: #c8d0d8; }
 
 .form-input:focus {
     outline: none;
     border-color: #ffcc00;
+    background: #fff;
     box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.15);
 }
 
@@ -137,40 +216,32 @@
 .form-actions {
     display: flex;
     gap: 12px;
-    padding-top: 8px;
+    margin-top: auto;
+    padding-top: 12px;
 }
 
 .btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 26px;
+    padding: 13px 28px;
     border: none;
     border-radius: 8px;
     font-size: 0.9rem;
     font-weight: 700;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.2s;
+    transition: opacity 0.2s, transform 0.15s;
     font-family: inherit;
 }
 
-.btn:hover {
-    opacity: 0.88;
-    transform: translateY(-1px);
-}
+.btn:hover { opacity: 0.88; transform: translateY(-1px); }
 
-.btn-submit {
-    background: #27ae60;
-    color: #fff;
-}
+.btn-submit { background: #27ae60; color: #fff; }
 
 .btn-clear {
-    background: #f0f2f5;
+    background: #f4f6f8;
     color: #7f8c8d;
-    border: 1.5px solid #dde1e7;
+    border: 1.5px solid #e0e4e8;
 }
 
-.btn-clear:hover {
-    background: #e8eaed;
-    opacity: 1;
-}
+.btn-clear:hover { background: #eaecef; opacity: 1; }
