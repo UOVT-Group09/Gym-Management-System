@@ -16,20 +16,25 @@
     color: white; 
     padding: 20px; 
     position: fixed; 
-    left: 0;   /* මේ line එක අලුතින් එකතු කරන්න */
-    top: 0;    /* මේ line එකත් අලුතින් එකතු කරන්න */
+    left: 0;  
+    top: 0;    
     z-index: 100;
 }
         .sidebar h2 { color: #ffcc00; text-align: center; font-size: 22px; margin-bottom: 30px; }
         .sidebar a { display: block; color: white; padding: 15px; text-decoration: none; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
         .sidebar a:hover { background: #34495e; color: #ffcc00; }
-        .main-content { 
-    margin-left: 300px; /* Sidebar එකේ ඉඩට වඩා ටිකක් වැඩි ඉඩක් මෙතනින් වෙන් කරන්න */
-    padding: 40px; 
-    width: calc(100% - 300px); 
+       .main-content {
+    padding: 40px;
+    width: 100%;
+    text-align: center; 
 }
-        .dashboard-cards { display: flex; gap: 20px; margin-top: 30px; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex: 1; text-align: center; border-bottom: 4px solid #ffcc00; }
+}
+.dashboard-cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex: 1; text-align: center; border-bottom: 4px solid #ffcc00; }
         .card h3 { color: #7f8c8d; margin-bottom: 10px; }
         .card p { font-size: 28px; font-weight: bold; color: #2c3e50; margin: 0; }
         .action-buttons { margin-top: 40px; }
