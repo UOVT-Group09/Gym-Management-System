@@ -7,8 +7,8 @@ require_once '../../tier2_application/get_members.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Members - Fitness Hub</title>
-    <link rel="stylesheet" href="dashboard_style.css">
-    <link rel="stylesheet" href="userdata_style.css">
+    <link rel="stylesheet" href="css/dashboard_style.css">
+    <link rel="stylesheet" href="css/userdata_style.css">
 </head>
 <body>
 

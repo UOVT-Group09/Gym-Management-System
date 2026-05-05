@@ -88,6 +88,7 @@ function nav_class(string $page, string $active): string {
         </a>
 
     </nav>
+    
     <div class="sidebar-footer">
         &copy; <?php echo date('Y'); ?> Fitness Hub
     </div>

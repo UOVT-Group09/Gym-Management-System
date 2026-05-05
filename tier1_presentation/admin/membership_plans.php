@@ -13,8 +13,8 @@ $plans_result = $conn->query("SELECT type_id, type_name, amount, duration_months
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Membership Plans - Fitness Hub</title>
-    <link rel="stylesheet" href="dashboard_style.css">
-    <link rel="stylesheet" href="plans_style.css">
+    <link rel="stylesheet" href="css/dashboard_style.css">
+    <link rel="stylesheet" href="css/plans_style.css">
 </head>
 <body>
 
