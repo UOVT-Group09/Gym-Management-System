@@ -202,5 +202,6 @@ $plans = $conn->query("SELECT type_id, type_name, amount FROM membership_types O
 
     </div>
 
+    <script src="includes/alerts.js"></script>
 </body>
 </html>

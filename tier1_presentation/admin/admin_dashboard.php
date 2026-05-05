@@ -369,5 +369,6 @@ require_once '../../tier2_application/get_payments.php';
 
     </div>
 
+    <script src="includes/alerts.js"></script>
 </body>
 </html>

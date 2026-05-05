@@ -1,6 +1,6 @@
 <?php
 // $active_page must be set before including this file.
-// Values: 'dashboard' | 'add_member' | 'members' | 'payments' | 'trainers' | 'reports'
+// Values: 'dashboard' | 'add_member' | 'members' | 'payments' | 'trainers' | 'plans'
 if (!isset($active_page)) $active_page = '';
 
 function nav_class(string $page, string $active): string {
@@ -55,16 +55,6 @@ function nav_class(string $page, string $active): string {
             View Members
         </a>
 
-        <a href="payments.php" class="<?php echo nav_class('payments', $active_page); ?>">
-            <span class="nav-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="1" y="4" width="22" height="16" rx="2"/>
-                    <line x1="1" y1="10" x2="23" y2="10"/>
-                </svg>
-            </span>
-            Payments
-        </a>
-
         <a href="trainers.php" class="<?php echo nav_class('trainers', $active_page); ?>">
             <span class="nav-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -76,7 +66,17 @@ function nav_class(string $page, string $active): string {
             Trainers
         </a>
 
-        <a href="reports.php" class="<?php echo nav_class('reports', $active_page); ?>">
+        <a href="payments.php" class="<?php echo nav_class('payments', $active_page); ?>">
+            <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="4" width="22" height="16" rx="2"/>
+                    <line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+            </span>
+            Payments
+        </a>
+
+        <a href="membership_plans.php" class="<?php echo nav_class('plans', $active_page); ?>">
             <span class="nav-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="20" x2="18" y2="10"/>
@@ -84,11 +84,11 @@ function nav_class(string $page, string $active): string {
                     <line x1="6" y1="20" x2="6" y2="14"/>
                 </svg>
             </span>
-            Reports
+            Membership Plans
         </a>
 
     </nav>
-
+    
     <div class="sidebar-footer">
         &copy; <?php echo date('Y'); ?> Fitness Hub
     </div>
