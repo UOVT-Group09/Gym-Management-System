@@ -45,7 +45,7 @@ $plans = $conn->query("SELECT type_id, type_name, amount FROM membership_types O
 
                     <div>
                         <div class="info-heading">Register a <span>New</span><br>Gym Member</div>
-                        <p class="info-sub">Add members to the system quickly and manage their plans and payments from one place.</p>
+                        <!-- <p class="info-sub">Add members to the system quickly and manage their plans and payments from one place.</p> -->
                     </div>
 
                     <div class="info-features">
