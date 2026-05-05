@@ -281,3 +281,44 @@ body { background: #f0f2f5; }
     transition: background 0.2s;
 }
 .btn-cancel:hover { background: #eaecef; }
+
+/* ── Row Actions ─────────────────────────────── */
+.action-btns { display: flex; gap: 8px; }
+
+.btn-edit, .btn-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.btn-edit   { background: #eaf4fb; color: #2980b9; }
+.btn-edit:hover { background: #d4e9f7; transform: translateY(-1px); }
+
+.btn-delete { background: #fdedec; color: #c0392b; }
+.btn-delete:hover { background: #fad7d3; transform: translateY(-1px); }
+
+/* ── Danger modal variant ────────────────────── */
+.modal-icon.danger {
+    background: rgba(231,76,60,0.15);
+    border-color: rgba(231,76,60,0.3);
+    color: #e74c3c;
+}
+
+.btn-submit.danger { background: #c0392b; color: #fff; }
+.btn-submit.danger:hover { background: #a93226; }
+
+.delete-confirm-text {
+    padding: 24px 28px;
+    color: #7f8c8d;
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+.delete-confirm-text strong { color: #2c3e50; }
