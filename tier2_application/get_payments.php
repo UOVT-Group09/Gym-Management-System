@@ -6,11 +6,14 @@ $total_revenue = 0;
 $r = $conn->query("SELECT COALESCE(SUM(amount), 0) AS total FROM payments");
 if ($r) $total_revenue = $r->fetch_assoc()['total'];
 
+// අලුත් View එක භාවිතයෙන් මේ මාසයේ ආදායම ලබා ගැනීම (Monthly Revenue Snapshot View)
 $monthly_revenue = 0;
-$r = $conn->query("SELECT COALESCE(SUM(amount), 0) AS total FROM payments
-                   WHERE MONTH(payment_date) = MONTH(CURRENT_DATE())
-                   AND YEAR(payment_date) = YEAR(CURRENT_DATE())");
-if ($r) $monthly_revenue = $r->fetch_assoc()['total'];
+$r = $conn->query("SELECT total_revenue FROM vw_monthly_revenue 
+                   WHERE rev_year = YEAR(CURRENT_DATE()) 
+                   AND rev_month = MONTH(CURRENT_DATE())");
+if ($r && $row = $r->fetch_assoc()) {
+    $monthly_revenue = $row['total_revenue'];
+}
 
 $total_payments = 0;
 $r = $conn->query("SELECT COUNT(*) AS total FROM payments");
