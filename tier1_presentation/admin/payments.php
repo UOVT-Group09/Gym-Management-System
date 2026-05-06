@@ -1,6 +1,8 @@
 <?php
+// Connect to Tier 2 Application Logic
 require_once '../../tier2_application/get_payments.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +18,6 @@ require_once '../../tier2_application/get_payments.php';
 
     <div class="main-content">
 
-        <!-- Top Bar -->
         <header class="topbar">
             <div class="topbar-title">
                 <h1>Payments</h1>
@@ -28,7 +29,6 @@ require_once '../../tier2_application/get_payments.php';
             </div>
         </header>
 
-        <!-- Summary Cards -->
         <div class="summary-grid">
 
             <div class="summary-card">
@@ -63,23 +63,47 @@ require_once '../../tier2_application/get_payments.php';
                 </div>
                 <div>
                     <div class="summary-value"><?php echo $total_payments; ?></div>
-                    <div class="summary-label">Total Transactions</div>
+                    <div class="summary-label">Filtered Transactions</div>
                 </div>
             </div>
 
         </div>
 
-        <!-- Payments Table -->
         <div class="table-card">
 
             <div class="table-card-header">
                 <div class="table-card-title">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2c3e50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
-                    </svg>
-                    Payment History
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2c3e50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+                        </svg>
+                        Payment History
+                        <span class="count-badge"><?php echo $total_payments; ?> Records</span>
+                    </div>
                 </div>
-                <span class="count-badge"><?php echo $total_payments; ?> Records</span>
+                
+                <form method="GET" action="payments.php" class="filter-form">
+                    <div class="date-input-group">
+                        <label for="start_date">From:</label>
+                        <input type="date" id="start_date" name="start_date" class="filter-input" value="<?php echo htmlspecialchars($start_date ?? ''); ?>">
+                    </div>
+                    
+                    <div class="date-input-group">
+                        <label for="end_date">To:</label>
+                        <input type="date" id="end_date" name="end_date" class="filter-input" value="<?php echo htmlspecialchars($end_date ?? ''); ?>">
+                    </div>
+
+                    <button type="submit" class="filter-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg>
+                        Filter
+                    </button>
+                    
+                    <?php if(!empty($start_date) || !empty($end_date)): ?>
+                        <a href="payments.php" class="reset-btn">Reset</a>
+                    <?php endif; ?>
+                </form>
             </div>
 
             <table class="payment-table">
@@ -94,7 +118,7 @@ require_once '../../tier2_application/get_payments.php';
                     </tr>
                 </thead>
                 <tbody>
-                <?php if ($payments_result && $payments_result->num_rows > 0): ?>
+                <?php if (isset($payments_result) && $payments_result->num_rows > 0): ?>
                     <?php while ($row = $payments_result->fetch_assoc()): ?>
                         <tr>
                             <td class="cell-id">#<?php echo htmlspecialchars($row['payment_id']); ?></td>
@@ -109,7 +133,7 @@ require_once '../../tier2_application/get_payments.php';
                     <?php endwhile; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="6" class="no-data">No payment records found</td>
+                        <td colspan="6" class="no-data">No payment records found for the selected dates</td>
                     </tr>
                 <?php endif; ?>
                 </tbody>
@@ -118,6 +142,5 @@ require_once '../../tier2_application/get_payments.php';
 
     </div>
 
-    <script src="includes/alerts.js"></script>
 </body>
 </html>
