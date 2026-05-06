@@ -93,9 +93,33 @@ BEGIN
     LEFT JOIN membership_types mt ON m.type_id = mt.type_id;
 END$$
 
+
+
 CREATE PROCEDURE GetTotalRevenue()
 BEGIN
     SELECT COALESCE(SUM(amount), 0) AS total_revenue FROM payments;
 END$$
 
-DELIMITER ;
+
+
+
+
+CREATE TABLE IF NOT EXISTS classes (
+    class_id INT AUTO_INCREMENT PRIMARY KEY,
+    class_name VARCHAR(100),
+    capacity INT DEFAULT 20
+);
+
+CREATE TABLE IF NOT EXISTS class_enrollments (
+    enroll_id INT AUTO_INCREMENT PRIMARY KEY,
+    class_id INT,
+    member_id INT,
+    enroll_status ENUM('Enrolled', 'Waitlisted') DEFAULT 'Enrolled',
+    enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE,
+    FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_class_status ON class_enrollments(class_id, enroll_status);
+
+
