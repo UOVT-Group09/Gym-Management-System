@@ -1,8 +1,7 @@
-
-CREATE DATABASE gym_management;
+CREATE DATABASE IF NOT EXISTS gym_management;
 USE gym_management;
 
-
+-- 1. Membership Types Table
 CREATE TABLE membership_types (
     type_id INT PRIMARY KEY AUTO_INCREMENT,
     type_name VARCHAR(50) NOT NULL,
@@ -10,7 +9,7 @@ CREATE TABLE membership_types (
     duration_months INT NOT NULL
 );
 
-
+-- 2. Members Table
 CREATE TABLE members (
     member_id INT PRIMARY KEY AUTO_INCREMENT,
     full_name VARCHAR(100) NOT NULL,
@@ -22,7 +21,7 @@ CREATE TABLE members (
     FOREIGN KEY (type_id) REFERENCES membership_types(type_id)
 );
 
-
+-- 3. Trainers Table
 CREATE TABLE trainers (
     trainer_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
@@ -30,7 +29,7 @@ CREATE TABLE trainers (
     phone VARCHAR(15)
 );
 
-
+-- 4. Payments Table
 CREATE TABLE payments (
     payment_id INT PRIMARY KEY AUTO_INCREMENT,
     member_id INT,
@@ -39,6 +38,7 @@ CREATE TABLE payments (
     FOREIGN KEY (member_id) REFERENCES members(member_id)
 );
 
+-- 5. Users Table
 CREATE TABLE users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -46,13 +46,31 @@ CREATE TABLE users (
     role ENUM('Admin', 'User') DEFAULT 'User'
 );
 
-
+-- Initial Data for Membership Types
 INSERT INTO membership_types (type_name, amount, duration_months) 
 VALUES 
     ('Regular', 5000.00, 1), 
     ('Premium', 9000.00, 3)
 ON DUPLICATE KEY UPDATE amount = VALUES(amount), duration_months = VALUES(duration_months);
 
+
+
+-- 1. Members 
+ALTER TABLE members ADD COLUMN membership_start DATE DEFAULT (CURRENT_DATE);
+ALTER TABLE members ADD COLUMN membership_end DATE;
+ALTER TABLE members ADD COLUMN status ENUM('Active', 'Expired', 'Frozen') DEFAULT 'Active';
+
+-- 2. Freeze 
+CREATE TABLE IF NOT EXISTS member_freezes (
+    freeze_id INT AUTO_INCREMENT PRIMARY KEY,
+    member_id INT,
+    freeze_start DATE,
+    freeze_end DATE,
+    FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE
+);
+
+
+-- Stored Procedures 
 
 DELIMITER $$
 
@@ -85,10 +103,9 @@ BEGIN
     VALUES (@new_member_id, v_amount);
 END$$
 
-
 CREATE PROCEDURE GetAllMembers()
 BEGIN
-    SELECT m.member_id, m.full_name, m.email, m.phone, m.gender, m.join_date, mt.type_name
+    SELECT m.member_id, m.full_name, m.email, m.phone, m.gender, m.join_date, mt.type_name, m.status, m.membership_end
     FROM members m
     LEFT JOIN membership_types mt ON m.type_id = mt.type_id;
 END$$
@@ -99,9 +116,6 @@ BEGIN
 END$$
 
 DELIMITER ;
-
-
-
 CREATE TABLE IF NOT EXISTS payment_alerts (
     alert_id INT PRIMARY KEY AUTO_INCREMENT,
     member_id INT,
@@ -113,7 +127,6 @@ CREATE TABLE IF NOT EXISTS payment_alerts (
 
 
 CREATE INDEX idx_member_date ON payments(member_id, payment_date);
-
 
 
 

@@ -1,6 +1,18 @@
+-- =============================================
+-- Tier 3: Database Logic
+-- =============================================
+
+-- 1. Audit Logs Table
+CREATE TABLE IF NOT EXISTS audit_logs (
+    log_id INT PRIMARY KEY AUTO_INCREMENT,
+    action VARCHAR(50),
+    member_id INT,
+    action_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 DELIMITER //
 
+-- 2. Procedure: RegisterNewMember
 CREATE PROCEDURE RegisterNewMember(
     IN p_full_name VARCHAR(100),
     IN p_email VARCHAR(100),
@@ -31,18 +43,36 @@ BEGIN
     COMMIT;
 END //
 
-DELIMITER ;
+-- 3. Procedure: ApplyMemberFreeze
+CREATE PROCEDURE ApplyMemberFreeze(IN p_member_id INT, IN p_days INT)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
 
+    START TRANSACTION;
+    
+    UPDATE members 
+    SET membership_end = DATE_ADD(membership_end, INTERVAL p_days DAY),
+        status = 'Frozen'
+    WHERE member_id = p_member_id;
+    
+    INSERT INTO member_freezes (member_id, freeze_start, freeze_end)
+    VALUES (p_member_id, CURDATE(), DATE_ADD(CURDATE(), INTERVAL p_days DAY));
+    
+    COMMIT;
+END //
 
-CREATE TABLE IF NOT EXISTS audit_logs (
-    log_id INT PRIMARY KEY AUTO_INCREMENT,
-    action VARCHAR(50),
-    member_id INT,
-    action_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- 4. Procedure: ExpireMemberships (Bulk Update)
+CREATE PROCEDURE ExpireMemberships()
+BEGIN
+    UPDATE members 
+    SET status = 'Expired' 
+    WHERE membership_end < CURDATE() AND status = 'Active';
+END //
 
-DELIMITER //
-
+-- 5. Trigger: AfterMemberDelete
 CREATE TRIGGER AfterMemberDelete
 BEFORE DELETE ON members
 FOR EACH ROW
