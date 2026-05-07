@@ -58,7 +58,7 @@ if (isset($_POST['action'])) {
                 $freeze_stmt->execute();
                 $freeze_stmt->close();
             }
-            header("Location: ../tier1_presentation/admin/userdata.php?success=Member+frozen+for+30+days.");
+            header("Location: ../tier1_presentation/admin/userdata.php?success=Member+frozen+for+{$days}+days.");
             exit();
         }
     }
