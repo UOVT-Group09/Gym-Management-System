@@ -1,6 +1,6 @@
 <?php
 // $active_page must be set before including this file.
-// Values: 'dashboard' | 'add_member' | 'members' | 'payments' | 'trainers' | 'plans'
+// Values: 'dashboard' | 'add_member' | 'members' | 'payments' | 'trainers' | 'plans' | 'classes'
 if (!isset($active_page)) $active_page = '';
 
 function nav_class(string $page, string $active): string {
@@ -64,6 +64,18 @@ function nav_class(string $page, string $active): string {
                 </svg>
             </span>
             Trainers
+        </a>
+
+        <a href="classes.php" class="<?php echo nav_class('classes', $active_page); ?>">
+            <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+            </span>
+            Classes
         </a>
 
         <a href="payments.php" class="<?php echo nav_class('payments', $active_page); ?>">

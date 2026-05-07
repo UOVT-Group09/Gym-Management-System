@@ -21,6 +21,13 @@ CREATE TABLE members (
     FOREIGN KEY (type_id) REFERENCES membership_types(type_id)
 );
 
+ALTER TABLE members
+ADD COLUMN status ENUM('Active', 'Expired', 'Frozen') DEFAULT 'Active';
+
+
+ALTER TABLE members ADD COLUMN membership_end DATE;
+ALTER TABLE members ADD COLUMN status ENUM('Active', 'Expired', 'Frozen') DEFAULT 'Active';
+
 -- 3. Trainers Table
 CREATE TABLE trainers (
     trainer_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -39,6 +46,34 @@ CREATE TABLE IF NOT EXISTS member_trainer_assignments (
     FOREIGN KEY (trainer_id) REFERENCES trainers(trainer_id) ON DELETE CASCADE,
     UNIQUE KEY (member_id),
     INDEX (trainer_id)
+);
+
+-- 3b. Classes Table
+CREATE TABLE IF NOT EXISTS classes (
+    class_id INT PRIMARY KEY AUTO_INCREMENT,
+    class_name VARCHAR(120) NOT NULL,
+    trainer_id INT NULL,
+    capacity INT NOT NULL DEFAULT 0,
+    scheduled_at DATETIME NOT NULL,
+    duration_minutes INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (trainer_id) REFERENCES trainers(trainer_id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS class_enrollments (
+    enrollment_id INT PRIMARY KEY AUTO_INCREMENT,
+    class_id INT NOT NULL,
+    member_id INT NOT NULL,
+    status ENUM('Enrolled', 'Waitlisted', 'Cancelled') NOT NULL DEFAULT 'Waitlisted',
+    enrolled_at DATETIME NULL,
+    waitlisted_at DATETIME NULL,
+    cancelled_at DATETIME NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE,
+    FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE,
+    UNIQUE KEY uq_class_member (class_id, member_id),
+    INDEX idx_class_status (class_id, status)
 );
 
 -- 4. Payments Table
