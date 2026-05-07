@@ -24,10 +24,12 @@ $r1 = $conn->query("SELECT COALESCE(SUM(amount), 0) AS total FROM payments");
 if ($r1) $total_revenue = $r1->fetch_assoc()['total'];
 
 $monthly_revenue = 0;
-$r2 = $conn->query("SELECT COALESCE(SUM(amount), 0) AS total FROM payments
-                   WHERE MONTH(payment_date) = MONTH(CURRENT_DATE())
-                   AND YEAR(payment_date) = YEAR(CURRENT_DATE())");
-if ($r2) $monthly_revenue = $r2->fetch_assoc()['total'];
+$r = $conn->query("SELECT total_revenue FROM vw_monthly_revenue 
+                   WHERE rev_year = YEAR(CURRENT_DATE()) 
+                   AND rev_month = MONTH(CURRENT_DATE())");
+if ($r && $row = $r->fetch_assoc()) {
+    $monthly_revenue = $row['total_revenue'];
+}
 
 $base_query = "
     SELECT

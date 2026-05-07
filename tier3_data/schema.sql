@@ -185,3 +185,22 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+
+-- ==========================================================
+-- 2) Monthly Revenue Snapshot View & Index
+-- ==========================================================
+
+-- Index for faster grouping by date
+CREATE INDEX idx_payment_date ON payments(payment_date);
+
+-- View for Monthly Revenue Snapshot
+CREATE OR REPLACE VIEW vw_monthly_revenue AS
+SELECT 
+    YEAR(payment_date) AS rev_year,
+    MONTH(payment_date) AS rev_month,
+    COUNT(payment_id) AS payment_count,
+    COALESCE(SUM(amount), 0) AS total_revenue,
+    COALESCE(AVG(amount), 0) AS average_payment
+FROM payments
+GROUP BY YEAR(payment_date), MONTH(payment_date);

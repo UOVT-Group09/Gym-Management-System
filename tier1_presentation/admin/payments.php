@@ -62,21 +62,6 @@ $members_list = $conn->query("SELECT m.member_id, m.full_name, mt.amount, mt.typ
     <title>Payments - Fitness Hub</title>
     <link rel="stylesheet" href="dashboard_style.css">
     <link rel="stylesheet" href="payments_style.css">
-    <style>
-        .add-payment-card { background: #fff; border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; }
-        .form-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
-        .form-group { flex: 1; min-width: 200px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; }
-        .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; background: #fdfdfd; }
-        .btn-submit { background: #27ae60; color: white; border: none; padding: 11px 25px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .btn-submit:hover { background: #219150; }
-        
-        .alerts-panel { background: #fff8f0; border: 1px solid #f5c97a; border-left: 4px solid #e6a800; border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; }
-        .alert-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-        .alert-badge.NEGATIVE  { background: #fde8e8; color: #c0392b; }
-        .alert-badge.HIGH_VALUE { background: #fdf3e8; color: #d35400; }
-        .alert-badge.DUPLICATE  { background: #eaf0fb; color: #2980b9; }
-    </style>
 </head>
 <body>
     <?php $active_page = 'payments'; include 'includes/sidebar.php'; ?>
@@ -93,7 +78,10 @@ $members_list = $conn->query("SELECT m.member_id, m.full_name, mt.amount, mt.typ
         </header>
 
         <div class="add-payment-card">
-            <h3 style="margin-top:0; margin-bottom:15px; color:#2c3e50;">➕ Add New Payment</h3>
+            <h3>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2c3e50" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add New Payment
+            </h3>
             <form action="../../tier2_application/process_new_payment.php" method="POST">
                 <div class="form-row">
                     <div class="form-group">
@@ -141,7 +129,10 @@ $members_list = $conn->query("SELECT m.member_id, m.full_name, mt.amount, mt.typ
 
         <div class="alerts-panel">
             <div class="alerts-panel-header">
-                <h3>⚠️ Payment Anomaly Alerts</h3>
+                <h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e6a800" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    Payment Anomaly Alerts
+                </h3>
             </div>
             <?php if (!empty($alerts)): ?>
                 <table class="alerts-table">
@@ -160,7 +151,10 @@ $members_list = $conn->query("SELECT m.member_id, m.full_name, mt.amount, mt.typ
                     </tbody>
                 </table>
             <?php else: ?>
-                <p class="no-alerts">✅ No anomalies detected.</p>
+                <p class="no-alerts">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e8449" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    No anomalies detected.
+                </p>
             <?php endif; ?>
         </div>
 
