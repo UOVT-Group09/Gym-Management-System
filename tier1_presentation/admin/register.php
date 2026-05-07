@@ -31,7 +31,6 @@ $plans = $conn->query("SELECT type_id, type_name, amount FROM membership_types O
         <div class="form-center">
             <div class="form-card">
 
-                <!-- Left: Info Panel -->
                 <div class="form-panel-info">
 
                     <div class="info-brand">
@@ -45,8 +44,7 @@ $plans = $conn->query("SELECT type_id, type_name, amount FROM membership_types O
 
                     <div>
                         <div class="info-heading">Register a <span>New</span><br>Gym Member</div>
-                        <!-- <p class="info-sub">Add members to the system quickly and manage their plans and payments from one place.</p> -->
-                    </div>
+                        </div>
 
                     <div class="info-features">
                         <div class="info-feature">
@@ -78,7 +76,6 @@ $plans = $conn->query("SELECT type_id, type_name, amount FROM membership_types O
 
                 </div>
 
-                <!-- Right: Form Panel -->
                 <div class="form-panel-form">
 
                     <div class="form-panel-title">
@@ -152,29 +149,29 @@ $plans = $conn->query("SELECT type_id, type_name, amount FROM membership_types O
                                             <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
                                         </svg>
                                     </span>
-                                    <select name="type_id" required class="form-input form-select">
-                                        <option value="" disabled selected>Select a plan</option>
+                                    <select name="type_id" id="plan_select" required class="form-input form-select">
+                                        <option value="" disabled selected data-amount="">Select a plan</option>
                                         <?php if ($plans && $plans->num_rows > 0): ?>
                                             <?php while ($plan = $plans->fetch_assoc()): ?>
-                                                <option value="<?php echo $plan['type_id']; ?>">
+                                                <option value="<?php echo $plan['type_id']; ?>" data-amount="<?php echo $plan['amount']; ?>">
                                                     <?php echo htmlspecialchars($plan['type_name']); ?> &mdash; Rs. <?php echo number_format($plan['amount'], 2); ?>
                                                 </option>
                                             <?php endwhile; ?>
                                         <?php else: ?>
-                                            <option value="" disabled>No plans available</option>
+                                            <option value="" disabled data-amount="">No plans available</option>
                                         <?php endif; ?>
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Initial Payment (LKR) <span class="required">*</span></label>
+                                <label class="form-label">Payment (LKR) <span class="required">*</span></label>
                                 <div class="input-wrap">
                                     <span class="input-icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                                         </svg>
                                     </span>
-                                    <input type="number" name="amount" step="0.01" required placeholder="5000.00" class="form-input">
+                                    <input type="number" name="amount" id="payment_amount" step="0.01" required placeholder="0.00" class="form-input" readonly style="background-color: #e9ecef; cursor: not-allowed;">
                                 </div>
                             </div>
                         </div>
@@ -203,5 +200,28 @@ $plans = $conn->query("SELECT type_id, type_name, amount FROM membership_types O
     </div>
 
     <script src="includes/alerts.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const planSelect = document.getElementById("plan_select");
+            const paymentAmount = document.getElementById("payment_amount");
+
+            // Dropdown එකේ අගය වෙනස් වෙද්දී මේක ක්‍රියාත්මක වෙනවා
+            planSelect.addEventListener("change", function() {
+                // තෝරපු plan එක ගන්නවා
+                const selectedOption = planSelect.options[planSelect.selectedIndex];
+                
+                // ඒ plan එකට අදාළ data-amount (මුදල) ගන්නවා
+                const amount = selectedOption.getAttribute("data-amount");
+                
+                // අරගත්ත මුදල text box එකට දානවා (දශමස්ථාන 2ක් එක්ක)
+                if (amount) {
+                    paymentAmount.value = parseFloat(amount).toFixed(2);
+                } else {
+                    paymentAmount.value = "";
+                }
+            });
+        });
+    </script>
 </body>
 </html>
