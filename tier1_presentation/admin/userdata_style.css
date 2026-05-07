@@ -78,6 +78,26 @@ body { background: #f0f2f5; }
 .gender-male   { background: #ebf5fb; color: #2980b9; }
 .gender-female { background: #fdf2f8; color: #c0392b; }
 
+.no-data {
+    text-align: center;
+    padding: 48px !important;
+    color: #95a5a6;
+    font-style: italic;
+}
+
+/* ── Status Badges ───────────────────────────── */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+.status-active  { background: #eafaf1; color: #1e8449; border: 1px solid #a9dfbf; }
+.status-frozen  { background: #fef9e7; color: #b7770d; border: 1px solid #f9e4b7; }
+.status-expired { background: #fdedec; color: #c0392b; border: 1px solid #f1948a; }
+
 /* ── Plan Badges ─────────────────────────────── */
 .plan-badge {
     display: inline-block;
@@ -85,17 +105,50 @@ body { background: #f0f2f5; }
     border-radius: 999px;
     font-size: 0.76rem;
     font-weight: 700;
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #86efac;
 }
-.plan-gold    { background: #fff8e1; color: #e6a800; border: 1px solid #ffe082; }
-.plan-silver  { background: #f4f6f7; color: #7f8c8d; border: 1px solid #d5d8dc; }
-.plan-basic   { background: #fdf5e6; color: #ca8a04; border: 1px solid #fcd34d; }
-.plan-default { background: #f0fdf4; color: #16a34a; border: 1px solid #86efac; }
 
-.no-data {
-    text-align: center;
-    padding: 48px !important;
-    color: #95a5a6;
-    font-style: italic;
+/* ── Action Buttons ──────────────────────────── */
+.btn-freeze {
+    padding: 7px 16px;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid #2980b9;
+    background: transparent;
+    color: #2980b9;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.btn-freeze:hover { background: #2980b9; color: #fff; }
+
+.btn-unfreeze {
+    padding: 7px 16px;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid #27ae60;
+    background: transparent;
+    color: #27ae60;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.btn-unfreeze:hover { background: #27ae60; color: #fff; }
+
+.btn-no-action {
+    padding: 7px 16px;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1.5px solid #d5d8dc;
+    background: #f4f6f7;
+    color: #aab7b8;
+    cursor: not-allowed;
+    white-space: nowrap;
 }
 
 /* ── Back Button ─────────────────────────────── */

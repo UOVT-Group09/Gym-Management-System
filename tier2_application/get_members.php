@@ -13,15 +13,25 @@ if (!$result) {
 }
 
 
-if(isset($_POST['action']) && $_POST['action'] == 'freeze') {
-    $m_id = $_POST['member_id'];
-    $days = $_POST['days'];
-    
+if (isset($_POST['action'])) {
+    $m_id = (int)$_POST['member_id'];
 
-    $freeze_query = "CALL ApplyMemberFreeze($m_id, $days)";
-    mysqli_query($conn, $freeze_query);
-    
-    header("Location: ../tier1_presentation/admin/userdata.php?status=frozen");
-    exit();
+    if ($_POST['action'] === 'freeze') {
+        $days = (int)$_POST['days'];
+        $stmt = $conn->prepare("CALL ApplyMemberFreeze(?, ?)");
+        $stmt->bind_param("ii", $m_id, $days);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: ../tier1_presentation/admin/userdata.php?success=Member+frozen+for+30+days.");
+        exit();
+    }
+
+    if ($_POST['action'] === 'unfreeze') {
+        $stmt = $conn->prepare("UPDATE members SET status = 'Active' WHERE member_id = ?");
+        $stmt->bind_param("i", $m_id);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: ../tier1_presentation/admin/userdata.php?success=Member+successfully+unfrozen.");
+        exit();
+    }
 }
-?>

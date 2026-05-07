@@ -61,33 +61,43 @@ require_once '../../tier2_application/get_members.php';
         <td><?php echo $row['phone']; ?></td>
         <td><?php echo $row['gender']; ?></td>
         <td>
-            <span class="badge bg-light text-success border border-success">
-                <?php echo $row['type_name']; ?>
+            <span class="plan-badge">
+                <?php echo htmlspecialchars($row['type_name']); ?>
             </span>
         </td>
         <td><?php echo $row['join_date']; ?></td>
 
         <td>
-            <span class="badge <?php 
-                echo ($row['status'] == 'Active' ? 'bg-success' : 
-                     ($row['status'] == 'Frozen' ? 'bg-warning text-dark' : 'bg-danger')); 
-            ?>">
-                <?php echo $row['status']; ?>
+            <?php
+                $statusClass = match($row['status']) {
+                    'Active'  => 'status-active',
+                    'Frozen'  => 'status-frozen',
+                    default   => 'status-expired',
+                };
+            ?>
+            <span class="status-badge <?php echo $statusClass; ?>">
+                <?php echo htmlspecialchars($row['status']); ?>
             </span>
         </td>
 
         <td><?php echo $row['membership_end'] ? $row['membership_end'] : 'N/A'; ?></td>
 
         <td>
-            <?php if($row['status'] == 'Active'): ?>
+            <?php if ($row['status'] === 'Active'): ?>
                 <form method="POST" action="../../tier2_application/get_members.php" style="display:inline;">
                     <input type="hidden" name="member_id" value="<?php echo $row['member_id']; ?>">
-                    <input type="hidden" name="days" value="30"> 
+                    <input type="hidden" name="days" value="30">
                     <input type="hidden" name="action" value="freeze">
-                    <button type="submit" class="btn btn-outline-info btn-sm">Freeze (30d)</button>
+                    <button type="submit" class="btn-freeze">Freeze (30d)</button>
+                </form>
+            <?php elseif ($row['status'] === 'Frozen'): ?>
+                <form method="POST" action="../../tier2_application/get_members.php" style="display:inline;">
+                    <input type="hidden" name="member_id" value="<?php echo $row['member_id']; ?>">
+                    <input type="hidden" name="action" value="unfreeze">
+                    <button type="submit" class="btn-unfreeze">Unfreeze</button>
                 </form>
             <?php else: ?>
-                <button class="btn btn-secondary btn-sm" disabled>No Action</button>
+                <button class="btn-no-action" disabled>No Action</button>
             <?php endif; ?>
         </td>
     </tr>
