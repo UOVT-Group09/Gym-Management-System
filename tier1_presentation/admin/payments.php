@@ -1,44 +1,41 @@
 <?php
-// Include the database configuration (adjust path if needed)
+
 require_once '../../tier2_application/db_config.php';
 
-// Default variable values
+
 $total_revenue = 0;
 $monthly_revenue = 0;
 $total_payments = 0;
 $date_condition = "";
 
-// Get Filter Values
+
 $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
 $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
 
-// Handle Filter Logic
+
 if (!empty($start_date) && !empty($end_date)) {
-    // Both dates selected
     $date_condition = "WHERE DATE(p.payment_date) BETWEEN '$start_date' AND '$end_date'";
 } elseif (!empty($start_date)) {
-    // Only Start Date selected
     $date_condition = "WHERE DATE(p.payment_date) >= '$start_date'";
 } elseif (!empty($end_date)) {
-    // Only End Date selected
     $date_condition = "WHERE DATE(p.payment_date) <= '$end_date'";
 }
 
-// 1. Get Total Revenue (Overall - not affected by filter)
+
 $rev_query = "SELECT SUM(amount) as total FROM payments";
 $rev_result = $conn->query($rev_query);
 if ($rev_result && $row = $rev_result->fetch_assoc()) {
     $total_revenue = $row['total'] ? $row['total'] : 0;
 }
 
-// 2. Get This Month Revenue (Overall - not affected by filter)
+
 $month_query = "SELECT SUM(amount) as total FROM payments WHERE MONTH(payment_date) = MONTH(CURRENT_DATE()) AND YEAR(payment_date) = YEAR(CURRENT_DATE())";
 $month_result = $conn->query($month_query);
 if ($month_result && $row = $month_result->fetch_assoc()) {
     $monthly_revenue = $row['total'] ? $row['total'] : 0;
 }
 
-// 3. Get Filtered Payments for the Table
+
 $payments_query = "
     SELECT p.payment_id, p.amount, p.payment_date, m.full_name, m.email, mt.type_name 
     FROM payments p
@@ -49,10 +46,31 @@ $payments_query = "
 ";
 $payments_result = $conn->query($payments_query);
 
-// Update total payments count based on the filter
+
 if ($payments_result) {
     $total_payments = $payments_result->num_rows;
 }
+
+
+$alerts = [];
+$alerts_result = @$conn->query("
+    SELECT
+        pa.alert_id,
+        pa.alert_type,
+        pa.amount,
+        pa.detected_at,
+        m.full_name AS member_name
+    FROM payment_alerts pa
+    LEFT JOIN members m ON pa.member_id = m.member_id
+    ORDER BY pa.detected_at DESC
+    LIMIT 10
+");
+if ($alerts_result) {
+    while ($row = $alerts_result->fetch_assoc()) {
+        $alerts[] = $row;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -63,6 +81,66 @@ if ($payments_result) {
     <title>Payments - Fitness Hub</title>
     <link rel="stylesheet" href="dashboard_style.css">
     <link rel="stylesheet" href="payments_style.css">
+    <style>
+      
+        .alerts-panel {
+            background: #fff8f0;
+            border: 1px solid #f5c97a;
+            border-left: 4px solid #e6a800;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+        }
+        .alerts-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .alerts-panel-header h3 {
+            margin: 0;
+            font-size: 15px;
+            color: #7a5500;
+        }
+        .alerts-panel .no-alerts {
+            color: #999;
+            font-size: 13px;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .alerts-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .alerts-table thead th {
+            background: #ffefc7;
+            color: #7a5500;
+            padding: 8px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .alerts-table tbody tr:hover {
+            background: #fff3d6;
+        }
+        .alerts-table tbody td {
+            padding: 7px 12px;
+            border-bottom: 1px solid #fde8b0;
+            color: #3d3d3d;
+        }
+        .alert-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .alert-badge.NEGATIVE  { background: #fde8e8; color: #c0392b; }
+        .alert-badge.HIGH_VALUE { background: #fdf3e8; color: #d35400; }
+        .alert-badge.DUPLICATE  { background: #eaf0fb; color: #2980b9; }
+       
+    </style>
 </head>
 <body>
 
@@ -120,6 +198,49 @@ if ($payments_result) {
             </div>
 
         </div>
+
+      
+        <div class="alerts-panel">
+            <div class="alerts-panel-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e6a800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <h3>Payment Anomaly Alerts <span style="font-weight:400; font-size:12px; color:#aaa;">(latest 10)</span></h3>
+            </div>
+
+            <?php if (!empty($alerts)): ?>
+                <table class="alerts-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Member</th>
+                            <th>Alert Type</th>
+                            <th>Amount</th>
+                            <th>Detected At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($alerts as $i => $alert): ?>
+                            <tr>
+                                <td><?php echo $i + 1; ?></td>
+                                <td><?php echo htmlspecialchars($alert['member_name'] ?? '—'); ?></td>
+                                <td>
+                                    <span class="alert-badge <?php echo htmlspecialchars($alert['alert_type']); ?>">
+                                        <?php echo htmlspecialchars($alert['alert_type']); ?>
+                                    </span>
+                                </td>
+                                <td>Rs. <?php echo number_format($alert['amount'], 2); ?></td>
+                                <td><?php echo date('M j, Y  g:i A', strtotime($alert['detected_at'])); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <p class="no-alerts">✅ No anomalies detected.</p>
+            <?php endif; ?>
+        </div>
+       
 
         <div class="table-card">
 
