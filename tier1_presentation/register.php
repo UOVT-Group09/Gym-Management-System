@@ -12,6 +12,18 @@
         <h2>Gym Member Registration</h2>
         <p>Please fill in the details to register a new member.</p>
 
+        <?php if (isset($_GET['success'])): ?>
+            <div class="alert alert-success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <?php echo htmlspecialchars($_GET['success']); ?>
+            </div>
+        <?php elseif (isset($_GET['error'])): ?>
+            <div class="alert alert-error">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <?php echo htmlspecialchars($_GET['error']); ?>
+            </div>
+        <?php endif; ?>
+
         <form action="../tier2_application/process_registration.php" method="POST">
             <div class="form-group">
                 <label>Full Name:</label>
@@ -60,5 +72,6 @@
             <button type="reset" class="btn-reset">Clear</button>
         </form>
     </div>
+    <script src="admin/includes/alerts.js"></script>
 </body>
 </html>

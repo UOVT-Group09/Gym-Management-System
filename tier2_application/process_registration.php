@@ -8,10 +8,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone     = trim($_POST['phone'] ?? '');
     $gender    = trim($_POST['gender'] ?? '');
     $type_id   = trim($_POST['type_id'] ?? '');
+    $amount    = trim($_POST['amount'] ?? '');
 
     $allowed_genders = ['male', 'female', 'other'];
 
-    if (empty($full_name) || empty($email) || empty($gender) || empty($type_id)) {
+    if (empty($full_name) || empty($email) || empty($gender) || empty($type_id) || empty($amount)) {
         die("Error: Please fill all required fields.");
     }
 
@@ -34,24 +35,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $type_id = (int)$validated_type_id;
 
+    $validated_amount = filter_var($amount, FILTER_VALIDATE_FLOAT, ["options" => ["min_range" => 0]]);
+    if ($validated_amount === false) {
+        die("Error: Invalid payment amount.");
+    }
+
+    $amount = (float)$validated_amount;
+
     try {
         
-        $sql = "CALL RegisterNewMember(?, ?, ?, ?, ?)";
+        $sql = "CALL RegisterNewMember(?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssi", $full_name, $email, $phone, $gender, $type_id);
+        $stmt->bind_param("ssssid", $full_name, $email, $phone, $gender, $type_id, $amount);
 
         if ($stmt->execute()) {
-            
-            header("Location: ../tier1_presentation/index.php?status=success");
+            header("Location: ../tier1_presentation/admin/userdata.php?success=Member+registered+successfully!");
             exit();
         } else {
             error_log("Registration failed: " . $stmt->error);
-            echo "Error: Unable to process registration at this time.";
+            echo "Error: Unable to process registration at this time." . $stmt->error;
         }
         $stmt->close();
     } catch (Exception $e) {
         error_log("Registration exception: " . $e->getMessage());
-        echo "Error: Unable to process registration at this time.";
+        echo "Error: Unable to process registration at this time." . $stmt->error;
     }
 
     $conn->close();
