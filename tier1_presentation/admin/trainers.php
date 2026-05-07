@@ -202,6 +202,11 @@ require_once '../../tier2_application/get_trainers.php';
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
     </script>
     <script src="includes/alerts.js"></script>
+    <script>
+        if (window.location.search) {
+            history.replaceState(null, '', window.location.pathname);
+        }
+    </script>
 
 </body>
 </html>

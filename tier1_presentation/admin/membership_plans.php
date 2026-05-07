@@ -6,6 +6,18 @@ $r = $conn->query("SELECT COUNT(*) AS total FROM membership_types");
 if ($r) $plan_count = $r->fetch_assoc()['total'];
 
 $plans_result = $conn->query("SELECT type_id, type_name, amount, duration_months FROM membership_types ORDER BY type_name ASC");
+
+// Load price history grouped by type_id (only if the table exists)
+$price_history = [];
+$tbl_check = $conn->query("SHOW TABLES LIKE 'membership_type_prices'");
+if ($tbl_check && $tbl_check->num_rows > 0) {
+    $hr = $conn->query("SELECT type_id, amount, effective_from FROM membership_type_prices ORDER BY type_id, effective_from DESC");
+    if ($hr) {
+        while ($h = $hr->fetch_assoc()) {
+            $price_history[$h['type_id']][] = $h;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -119,6 +131,14 @@ $plans_result = $conn->query("SELECT type_id, type_name, amount, duration_months
                                         </svg>
                                         Edit
                                     </button>
+                                    <?php if (!empty($price_history[$row['type_id']])): ?>
+                                    <button class="btn-history" onclick="openHistoryModal(<?php echo $row['type_id']; ?>)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                                        </svg>
+                                        History
+                                    </button>
+                                    <?php endif; ?>
                                     <button class="btn-delete" onclick="openDeleteModal(<?php echo $row['type_id']; ?>, '<?php echo addslashes(htmlspecialchars($row['type_name'])); ?>')">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                             <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
@@ -148,6 +168,57 @@ $plans_result = $conn->query("SELECT type_id, type_name, amount, duration_months
         </div>
 
     </div>
+
+    <!-- ── Price History Modals (one per plan) ───────────────────── -->
+    <?php if (!empty($price_history)): ?>
+        <?php foreach ($price_history as $tid => $rows): ?>
+        <div class="modal-overlay" id="historyModal_<?php echo $tid; ?>" onclick="handleOverlay(event,'historyModal_<?php echo $tid; ?>')">
+            <div class="modal" style="max-width:520px;">
+                <div class="modal-header">
+                    <div class="modal-header-left">
+                        <div class="modal-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="modal-title">Price History</div>
+                            <div class="modal-subtitle">All recorded price changes for this plan</div>
+                        </div>
+                    </div>
+                    <button class="modal-close" onclick="closeModal('historyModal_<?php echo $tid; ?>')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body modal-body-table">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Amount (LKR)</th>
+                                <th>Effective From</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($rows as $i => $h): ?>
+                            <tr>
+                                <td><?php echo count($rows) - $i; ?></td>
+                                <td class="td-amount">
+                                    Rs. <?php echo number_format($h['amount'], 2); ?>
+                                    <?php if ($i === 0): ?><span class="current-tag">Current</span><?php endif; ?>
+                                </td>
+                                <td class="td-date"><?php echo date('M j, Y  g:i A', strtotime($h['effective_from'])); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 
     <!-- ── Add Plan Modal ─────────────────────────────────────────── -->
     <div class="modal-overlay" id="addModal" onclick="handleOverlay(event, 'addModal')">
@@ -341,6 +412,10 @@ $plans_result = $conn->query("SELECT type_id, type_name, amount, duration_months
     </div>
 
     <script>
+        function openHistoryModal(id) {
+            document.getElementById('historyModal_' + id).classList.add('open');
+        }
+
         function openAddModal() {
             document.getElementById('addModal').classList.add('open');
         }
@@ -369,11 +444,16 @@ $plans_result = $conn->query("SELECT type_id, type_name, amount, duration_months
 
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
-                ['addModal', 'editModal', 'deleteModal'].forEach(id => closeModal(id));
+                document.querySelectorAll('.modal-overlay.open').forEach(el => el.classList.remove('open'));
             }
         });
     </script>
     <script src="includes/alerts.js"></script>
+    <script>
+        if (window.location.search) {
+            history.replaceState(null, '', window.location.pathname);
+        }
+    </script>
 
 </body>
 </html>
