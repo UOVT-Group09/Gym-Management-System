@@ -14,12 +14,17 @@ if (!$result) {
 
 
 if(isset($_POST['action']) && $_POST['action'] == 'freeze') {
-    $m_id = $_POST['member_id'];
-    $days = $_POST['days'];
-    
+    $m_id = filter_var($_POST['member_id'] ?? null, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]]);
+    $days = filter_var($_POST['days'] ?? null, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]]);
 
-    $freeze_query = "CALL ApplyMemberFreeze($m_id, $days)";
-    mysqli_query($conn, $freeze_query);
+    if ($m_id !== false && $days !== false) {
+        $freeze_stmt = $conn->prepare("CALL ApplyMemberFreeze(?, ?)");
+        if ($freeze_stmt) {
+            $freeze_stmt->bind_param("ii", $m_id, $days);
+            $freeze_stmt->execute();
+            $freeze_stmt->close();
+        }
+    }
     
     header("Location: ../tier1_presentation/admin/userdata.php?status=frozen");
     exit();

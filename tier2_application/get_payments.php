@@ -5,6 +5,22 @@ $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
 $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
 $date_condition = "";
 
+function normalize_date($value) {
+    if (empty($value)) {
+        return '';
+    }
+
+    $dt = DateTime::createFromFormat('Y-m-d', $value);
+    if ($dt && $dt->format('Y-m-d') === $value) {
+        return $value;
+    }
+
+    return '';
+}
+
+$start_date = normalize_date($start_date);
+$end_date = normalize_date($end_date);
+
 if (!empty($start_date) && !empty($end_date)) {
     $date_condition = "WHERE DATE(p.payment_date) BETWEEN '$start_date' AND '$end_date'";
 } elseif (!empty($start_date)) {

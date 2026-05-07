@@ -53,12 +53,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         } else {
             error_log("Registration failed: " . $stmt->error);
-            echo "Error: Unable to process registration at this time." . $stmt->error;
+            echo "Error: Unable to process registration at this time.";
         }
         $stmt->close();
     } catch (Exception $e) {
         error_log("Registration exception: " . $e->getMessage());
-        echo "Error: Unable to process registration at this time." . $stmt->error;
+        echo "Error: Unable to process registration at this time.";
     }
 
     $conn->close();
