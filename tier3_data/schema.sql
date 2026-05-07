@@ -99,3 +99,24 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+
+
+CREATE TABLE IF NOT EXISTS payment_alerts (
+    alert_id INT PRIMARY KEY AUTO_INCREMENT,
+    member_id INT,
+    payment_id INT,
+    alert_type ENUM('NEGATIVE', 'HIGH_VALUE', 'DUPLICATE'),
+    amount DECIMAL(10,2),
+    detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE INDEX idx_member_date ON payments(member_id, payment_date);
+
+
+
+
+
+
+

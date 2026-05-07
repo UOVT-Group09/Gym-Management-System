@@ -55,3 +55,88 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+
+
+CREATE TRIGGER after_payment_insert
+AFTER INSERT ON payments
+FOR EACH ROW
+BEGIN
+
+    -- 1. Negative payment
+    IF NEW.amount < 0 THEN
+        INSERT INTO payment_alerts (member_id, payment_id, alert_type, amount)
+        VALUES (NEW.member_id, NEW.payment_id, 'NEGATIVE', NEW.amount);
+    END IF;
+
+    -- 2. Unusually high payment (adjust threshold as needed)
+    IF NEW.amount > 50000 THEN
+        INSERT INTO payment_alerts (member_id, payment_id, alert_type, amount)
+        VALUES (NEW.member_id, NEW.payment_id, 'HIGH_VALUE', NEW.amount);
+    END IF;
+
+    -- 3. Duplicate payment on the same day for the same member
+    IF EXISTS (
+        SELECT 1 FROM payments
+        WHERE member_id = NEW.member_id
+          AND DATE(payment_date) = DATE(NEW.payment_date)
+          AND payment_id != NEW.payment_id
+    ) THEN
+        INSERT INTO payment_alerts (member_id, payment_id, alert_type, amount)
+        VALUES (NEW.member_id, NEW.payment_id, 'DUPLICATE', NEW.amount);
+    END IF;
+
+END //
+
+DELIMITER ;
+
+
+
+
+DELIMITER //
+
+DROP TRIGGER IF EXISTS after_payment_insert //
+
+CREATE TRIGGER after_payment_insert
+AFTER INSERT ON payments
+FOR EACH ROW
+BEGIN
+    
+    IF NEW.amount < 0 THEN
+        INSERT INTO payment_alerts (member_id, payment_id, alert_type, amount)
+        VALUES (NEW.member_id, NEW.payment_id, 'NEGATIVE', NEW.amount);
+    END IF;
+
+   
+    IF NEW.amount > 100000 THEN
+        INSERT INTO payment_alerts (member_id, payment_id, alert_type, amount)
+        VALUES (NEW.member_id, NEW.payment_id, 'HIGH_VALUE', NEW.amount);
+    END IF;
+
+   
+    IF EXISTS (
+        SELECT 1 FROM payments 
+        WHERE member_id = NEW.member_id 
+        AND DATE(payment_date) = DATE(NEW.payment_date)
+        AND payment_id <> NEW.payment_id
+    ) THEN
+        INSERT INTO payment_alerts (member_id, payment_id, alert_type, amount)
+        VALUES (NEW.member_id, NEW.payment_id, 'DUPLICATE', NEW.amount);
+    END IF;
+END //
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+
