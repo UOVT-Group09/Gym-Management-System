@@ -15,6 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: ../tier1_presentation/admin/payments.php?status=success");
             exit();
         } else {
+            error_log("Payment insert failed: " . $stmt->error);
             echo "Error: Unable to process payment.";
         }
     }

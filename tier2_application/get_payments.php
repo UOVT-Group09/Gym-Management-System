@@ -3,8 +3,6 @@ require_once 'db_config.php';
 
 $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
 $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
-$date_condition = "";
-
 function normalize_date($value) {
     if (empty($value)) {
         return '';
@@ -21,14 +19,6 @@ function normalize_date($value) {
 $start_date = normalize_date($start_date);
 $end_date = normalize_date($end_date);
 
-if (!empty($start_date) && !empty($end_date)) {
-    $date_condition = "WHERE DATE(p.payment_date) BETWEEN '$start_date' AND '$end_date'";
-} elseif (!empty($start_date)) {
-    $date_condition = "WHERE DATE(p.payment_date) >= '$start_date'";
-} elseif (!empty($end_date)) {
-    $date_condition = "WHERE DATE(p.payment_date) <= '$end_date'";
-}
-
 $total_revenue = 0;
 $r1 = $conn->query("SELECT COALESCE(SUM(amount), 0) AS total FROM payments");
 if ($r1) $total_revenue = $r1->fetch_assoc()['total'];
@@ -39,7 +29,7 @@ $r2 = $conn->query("SELECT COALESCE(SUM(amount), 0) AS total FROM payments
                    AND YEAR(payment_date) = YEAR(CURRENT_DATE())");
 if ($r2) $monthly_revenue = $r2->fetch_assoc()['total'];
 
-$payments_result = $conn->query("
+$base_query = "
     SELECT
         p.payment_id,
         m.full_name,
@@ -50,9 +40,41 @@ $payments_result = $conn->query("
     FROM payments p
     LEFT JOIN members m ON p.member_id = m.member_id
     LEFT JOIN membership_types mt ON m.type_id = mt.type_id
-    $date_condition
-    ORDER BY p.payment_date DESC
-");
+";
+
+if (!empty($start_date) && !empty($end_date)) {
+    $stmt = $conn->prepare($base_query . " WHERE DATE(p.payment_date) BETWEEN ? AND ? ORDER BY p.payment_date DESC");
+    if ($stmt) {
+        $stmt->bind_param("ss", $start_date, $end_date);
+        $stmt->execute();
+        $payments_result = $stmt->get_result();
+        $stmt->close();
+    } else {
+        $payments_result = false;
+    }
+} elseif (!empty($start_date)) {
+    $stmt = $conn->prepare($base_query . " WHERE DATE(p.payment_date) >= ? ORDER BY p.payment_date DESC");
+    if ($stmt) {
+        $stmt->bind_param("s", $start_date);
+        $stmt->execute();
+        $payments_result = $stmt->get_result();
+        $stmt->close();
+    } else {
+        $payments_result = false;
+    }
+} elseif (!empty($end_date)) {
+    $stmt = $conn->prepare($base_query . " WHERE DATE(p.payment_date) <= ? ORDER BY p.payment_date DESC");
+    if ($stmt) {
+        $stmt->bind_param("s", $end_date);
+        $stmt->execute();
+        $payments_result = $stmt->get_result();
+        $stmt->close();
+    } else {
+        $payments_result = false;
+    }
+} else {
+    $payments_result = $conn->query($base_query . " ORDER BY p.payment_date DESC");
+}
 
 $total_payments = 0;
 if ($payments_result) {
