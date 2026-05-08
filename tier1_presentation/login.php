@@ -14,7 +14,13 @@
 
     <h2>Gym Management Login</h2>
 
-    <form action="login_process.php" method="POST">
+    <?php if (isset($_GET['error'])): ?>
+        <p style="color:#c0392b; margin-bottom: 12px; text-align: center; font-weight: 600;">
+            <?php echo $_GET['error'] === 'admin_only' ? 'Please log in as admin to continue.' : 'Invalid username or password.'; ?>
+        </p>
+    <?php endif; ?>
+
+    <form action="../tier2_application/login_process.php" method="POST">
 
         <div class="input-box">
             <label>Username</label>

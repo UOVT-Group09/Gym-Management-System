@@ -1,4 +1,6 @@
 <?php
+require_once 'admin_auth.php';
+require_admin_auth('../tier1_presentation/login.php');
 require_once 'db_config.php';
 
 function column_exists(mysqli $conn, string $table, string $column): bool {
