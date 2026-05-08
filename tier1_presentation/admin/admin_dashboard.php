@@ -1,4 +1,6 @@
 <?php
+require_once '../../tier2_application/admin_auth.php';
+require_admin_auth('../login.php');
 require_once '../../tier2_application/db_config.php';
 
 // Total members

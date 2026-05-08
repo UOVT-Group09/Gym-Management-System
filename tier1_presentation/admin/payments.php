@@ -1,4 +1,6 @@
 <?php
+require_once '../../tier2_application/admin_auth.php';
+require_admin_auth('../login.php');
 // Connect to Tier 2 Application Logic
 require_once '../../tier2_application/get_payments.php';
 ?>
