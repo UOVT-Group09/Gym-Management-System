@@ -1,6 +1,4 @@
 <?php
-require_once '../../tier2_application/admin_auth.php';
-require_admin_auth('../login.php');
 require_once '../../tier2_application/db_config.php';
 $plans = $conn->query("SELECT type_id, type_name, amount FROM membership_types ORDER BY type_name");
 ?>
